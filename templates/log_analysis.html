@@ -1,0 +1,71 @@
+<!-- log_analysis.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Analysis</title>
+</head>
+<body>
+    <h1>Log Analysis</h1>
+    <form action="/log_analysis" method="POST">
+        <div>
+            <label for="environment">环境:</label>
+            <input type="radio" id="dev" name="environment" value="dev" {{ 'checked' if environment == 'dev' else '' }}> dev
+            <input type="radio" id="test" name="environment" value="test" {{ 'checked' if environment == 'test' else '' }}> test
+            <input type="radio" id="sim" name="environment" value="sim" {{ 'checked' if environment == 'sim' else '' }}> sim
+            <input type="radio" id="service" name="environment" value="service" {{ 'checked' if environment == 'service' else '' }}> service
+        </div>
+
+        <div style="display: inline-list-item; justify-content: left; width: 1200px">
+            <label for="service_type">服务类型:</label>
+            <input type="radio" name="service_type" value="dm" style="flex: 1; text-align: left;" {{ 'checked' if service_type == 'dm' else '' }}> dm
+            <input type="radio" name="service_type" value="nlu" style="flex: 1; text-align: left;" {{ 'checked' if service_type == 'nlu' else '' }}> nlu
+            <input type="radio" name="service_type" value="template" style="flex: 1; text-align: left;" {{ 'checked' if service_type == 'template' else '' }}> template
+            <input type="radio" name="service_type" value="extract_log" style="flex: 1; text-align: left;" {{ 'checked' if service_type == 'extract_log' else '' }}> extract_log
+        </div>
+
+        <div style="display: flex; justify-content: left;width:450px">
+            <label for="device">入口设备:</label>
+            <input type="radio" name="device" value="Television" style="flex: auto; text-align: left;" {{ 'checked' if device == 'Television' else '' }}> Television
+            <input type="radio" name="device" value="X20" style="flex: auto; text-align: left;" {{ 'checked' if device == 'X20' else '' }}> X20
+            <input type="radio" name="device" value="VoicePanel" style="flex: auto; text-align: left;" {{ 'checked' if device == 'VoicePanel' else '' }}> VoicePanel
+        </div>
+
+        <div>
+            <label for="user_query">请输入用户query:</label>
+            <input type="text" id="user_query" name="user_query" value="{{ user_query }}">
+        </div>
+
+        <div>
+            <label for="block_info">block_info:</label>
+            <input type="checkbox" name="log_option" value="block_info" {{ 'checked' if block_info else '' }}> Yes
+        </div>
+        <div>
+            <label for="tpl_match">tpl_match:</label>
+            <input type="checkbox" name="log_option" value="tpl_match" {{ 'checked' if tpl_match else '' }}> Yes
+        </div>
+        <div>
+            <label for="do_nlu">do_nlu:</label>
+            <input type="checkbox" name="log_option" value="do_nlu" {{ 'checked' if do_nlu else '' }}> Yes
+        </div>
+        <div>
+            <label for="log_trace">log_trace:</label>
+            <input type="checkbox" name="log_option" value="log_trace" {{ 'checked' if log_trace else '' }}> Yes
+        </div>
+        <div>
+            <label for="doNlpAnalysis">doNlpAnalysis:</label>
+            <input type="checkbox" name="log_option" value="doNlpAnalysis" {{ 'checked' if doNlpAnalysis else '' }}> Yes
+        </div>
+
+        <div>
+            <button type="submit" name="action" value="test">测试</button>
+            <button type="submit" name="action" value="bug">bug复现</button>
+        </div>
+
+        <div>
+            <textarea rows="10" cols="50" readonly>{{ log_output }}</textarea>
+        </div>
+    </form>
+</body>
+</html>

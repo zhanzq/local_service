@@ -1,0 +1,106 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    height: 100vh;
+}
+
+  .radio-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px; /* 控制每个选项的间隔 */
+  }
+
+  .radio-group input[type="radio"] {
+    margin: 0;
+    padding: 0;
+  }
+
+  .radio-group label {
+    margin: 0;
+  }
+
+.layout {
+    display: flex;
+    width: 100%;
+}
+
+.sidebar {
+    width: 240px;
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.sidebar .logo {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.tree-nav {
+    list-style: none;
+    padding: 0;
+}
+
+.tree-nav > li {
+    margin: 10px 0;
+}
+
+.tree-nav ul {
+    margin-left: 20px;
+    list-style: none;
+    display: none;
+}
+
+.tree-nav > li span {
+    cursor: pointer;
+}
+
+.tree-nav > li span:hover {
+    color: #1abc9c;
+}
+
+.tree-nav > li > ul {
+    display: none;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #ecf0f1;
+    overflow-y: auto;
+}
+
+.search-bar {
+    margin-bottom: 20px;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.content-area {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.file-list {
+    list-style: none;
+    padding: 0;
+}
+
+.file-list li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.file-list li:hover {
+    background: #f9f9f9;
+}
