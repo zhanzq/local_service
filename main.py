@@ -134,7 +134,6 @@ async def test(request: request.Request):
     json = request.form
     return response.text(f"keys: {tuple(json.keys())}, values: {tuple(json.values())}")
 
-
 @app.post("/upload")
 async def upload_file(request: request.Request):
     files = request.files
@@ -207,10 +206,10 @@ app.add_route(LogAnalysisView.as_view(), '/log_analysis')
 
 # host: 监听的IP, port: 监听的端口, auto_reload: 修改代码之后是否自动重启
 def main():
-    port = 8809
+    port = 8808
     try:
         check_port_in_use(port)
-        app.run(host="127.0.0.1", port=port, auto_reload=True, debug=True)  # debug=True，开启调试模式
+        app.run(host="127.0.0.1", port=port, auto_reload=True, debug=False, workers=16)  # debug=True，开启调试模式
     except Exception as e:
         print(e)
 

@@ -11,6 +11,7 @@ def load_template(template_path):
     with open(template_path, 'r', encoding='utf-8') as f:
         return f.read()
 
+
 class PortInUseError(Exception):
     def __init__(self, message):
         self.message = message

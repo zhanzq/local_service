@@ -5,20 +5,16 @@ body {
     height: 100vh;
 }
 
-  .radio-group {
+.log-option {
     display: inline-flex;
-    align-items: center;
-    gap: 4px; /* 控制每个选项的间隔 */
-  }
+    justify-content: space-between;
+    width: 400px;
+}
 
-  .radio-group input[type="radio"] {
-    margin: 0;
-    padding: 0;
-  }
-
-  .radio-group label {
-    margin: 0;
-  }
+.radio-item {
+    width: 150px; /* 每个单选框的宽度 */
+    text-align: left;
+}
 
 .layout {
     display: flex;

@@ -8,19 +8,19 @@ from sanic.views import HTTPMethodView
 from sanic import html
 from utils import load_template
 from jinja2 import Template
+from haier_auto_test import HaierAutoTest
 
 
-# Default values for the form
-DEFAULTS = {
-    'environment': 'dev',
-    'service_type': 'dm',
-    'device': 'Television',
-    'block_info': False,
-    'tpl_match': False,
-    'do_nlu': False,
-    'log_trace': False,
-    'doNlpAnalysis': True
-}
+auto_test = HaierAutoTest(
+    env="test",
+    device="X20",
+    service_type="dm",
+    block_info_check=False,
+    tpl_match_check=False,
+    do_nlu_check=False,
+    log_trace_check=False,
+    do_nlp_analysis_check=True
+)
 
 
 # View to handle rendering and form submission
@@ -28,64 +28,53 @@ class LogAnalysisView(HTTPMethodView):
     async def get(self, request):
         log_analysis_template = os.path.join(os.path.dirname(__file__), "../templates/log_analysis.html")
         template = load_template(template_path=log_analysis_template)
-        print(DEFAULTS)
+        print(auto_test)
         return html(Template(template).render(
-            environment=DEFAULTS['environment'],
-            service_type=DEFAULTS['service_type'],
-            device=DEFAULTS['device'],
+            environment=auto_test.env,
+            service_type=auto_test.service_type,
+            device=auto_test.device,
             user_query="",
-            block_info=DEFAULTS['block_info'],
-            tpl_match=DEFAULTS['tpl_match'],
-            do_nlu=DEFAULTS['do_nlu'],
-            log_trace=DEFAULTS['log_trace'],
-            doNlpAnalysis=DEFAULTS['doNlpAnalysis'],
+            block_info=auto_test.block_info_check,
+            tpl_match=auto_test.tpl_match_check,
+            do_nlu=auto_test.do_nlu_check,
+            log_trace=auto_test.log_trace_check,
+            doNlpAnalysis=auto_test.do_nlp_analysis_check,
             log_output=""
         ))
 
     async def post(self, request):
         form_data = request.form
-        environment = form_data.get('environment', [DEFAULTS['environment']])
-        service_type = form_data.get('service_type', [DEFAULTS['service_type']])
-        device = form_data.get('device', [DEFAULTS['device']])
-        user_query = form_data.get('user_query', '')
+        auto_test.env = form_data.get('environment', auto_test.env)
+        auto_test.service_type = form_data.get('service_type', auto_test.service_type)
+        auto_test.device = form_data.get('device', auto_test.device)
+        auto_test.block_info_check = 'block_info' in form_data.getlist("log_option")
+        auto_test.tpl_match_check = 'tpl_match' in form_data.getlist("log_option")
+        auto_test.do_nlu_check = 'do_nlu' in form_data.getlist("log_option")
+        auto_test.log_trace_check = 'log_trace' in form_data.getlist("log_option")
+        auto_test.do_nlp_analysis_check = 'doNlpAnalysis' in form_data.getlist("log_option")
 
-        block_info = 'block_info' in form_data.getlist("log_option")
-        tpl_match = 'tpl_match' in form_data.getlist("log_option")
-        do_nlu = 'do_nlu' in form_data.getlist("log_option")
-        log_trace = 'log_trace' in form_data.getlist("log_option")
-        doNlpAnalysis = 'doNlpAnalysis' in form_data.getlist("log_option")
-
-        log_output = f"Query: {user_query}\nEnvironment: {environment}\nService: {service_type}\nDevice: {device}\n"
-        log_output += f"block_info: {block_info}\ntpl_match: {tpl_match}\ndo_nlu: {do_nlu}\n"
-        log_output += f"log_trace: {log_trace}\ndoNlpAnalysis: {doNlpAnalysis}"
-
+        user_query = form_data.get('user_query', '').strip()
         action = form_data.get('action', '')
-        if action == 'test':
-            log_output += "\nAction: Test clicked"
-        elif action == 'bug':
-            log_output += "\nAction: Bug Reproduce clicked"
 
-        # update DEFAULTS config
-        DEFAULTS["environment"] = environment
-        DEFAULTS["service_type"] = service_type
-        DEFAULTS["device"] = device
-        DEFAULTS["block_info"] = block_info
-        DEFAULTS["tpl_match"] = tpl_match
-        DEFAULTS["do_nlu"] = do_nlu
-        DEFAULTS["log_trace"] = log_trace
-        DEFAULTS["doNlpAnalysis"] = doNlpAnalysis
+        if user_query:
+            if action == 'test':
+                log_output = auto_test.process_input(input_text=user_query)
+            elif action == 'bug':
+                log_output = auto_test.bug_reproduce(sn=user_query)
+        else:
+            log_output = ""
 
         log_analysis_template = os.path.join(os.path.dirname(__file__), "../templates/log_analysis.html")
         template = load_template(template_path=log_analysis_template)
         return html(Template(template).render(
-            environment=environment,
-            service_type=service_type,
-            device=device,
+            environment=auto_test.env,
+            service_type=auto_test.service_type,
+            device=auto_test.device,
             user_query=user_query,
-            block_info=block_info,
-            tpl_match=tpl_match,
-            do_nlu=do_nlu,
-            log_trace=log_trace,
-            doNlpAnalysis=doNlpAnalysis,
+            block_info=auto_test.block_info_check,
+            tpl_match=auto_test.tpl_match_check,
+            do_nlu=auto_test.do_nlu_check,
+            log_trace=auto_test.log_trace_check,
+            doNlpAnalysis=auto_test.do_nlp_analysis_check,
             log_output=log_output
         ))
