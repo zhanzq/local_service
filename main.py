@@ -4,7 +4,7 @@
 #
 
 import aiofiles
-from utils import check_port_in_use
+from utils import check_port_in_use, release_port
 from sanic import Sanic, request, response
 from views.log_analysis_view import LogAnalysisView
 
@@ -209,9 +209,11 @@ def main():
     port = 8808
     try:
         check_port_in_use(port)
-        app.run(host="127.0.0.1", port=port, auto_reload=True, debug=False, workers=16)  # debug=True，开启调试模式
     except Exception as e:
+        release_port(port)
         print(e)
+
+    app.run(host="127.0.0.1", port=port, auto_reload=True, debug=False, workers=2)  # debug=True，开启调试模式
 
 
 if __name__ == "__main__":

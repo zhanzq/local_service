@@ -5,9 +5,7 @@
 import json
 import requests
 from common_utils import format_string
-from common_utils.haier.auto_test.parse_log import get_log_id, get_service_info, get_query_by_sn, block_check, \
-    get_tpl_match_info_from_log, get_do_nlu_info_from_log, get_log_trace_info_from_log, \
-    get_do_nlp_analysis_info_from_log
+from common_utils.haier.auto_test.parse_log import LogParser
 from common_utils.haier.auto_test.nlu import NLU
 
 
@@ -22,6 +20,7 @@ class HaierAutoTest:
                  log_trace_check=False,
                  do_nlp_analysis_check=False):
         self.parser = NLU()
+        self.log_parser = LogParser(env=env)
         self.device = device
         self.env = env
         self.service_type = service_type
@@ -33,9 +32,9 @@ class HaierAutoTest:
         pass
 
     def bug_reproduce(self, sn):
-        log_id_map = get_log_id(sn=sn, env=self.env)
+        self.log_parser.update_config(env=self.env, sn=sn)
         service_name = "dialog-system:doNlu"
-        resp_obj = get_service_info(sn=sn, log_id_map=log_id_map, service_name=service_name, env=self.env)
+        resp_obj = self.log_parser.get_service_info(service_name=service_name)
         req = resp_obj.get("data").get("reqBody")
         args = json.loads(req)
 
@@ -124,7 +123,7 @@ class HaierAutoTest:
         return text
 
     def extract_log(self, text, block_domain_check=None):
-        env = self.env
+        self.log_parser.update_config(env=self.env)
         block_info_check = self.block_info_check
         tpl_match_check = self.tpl_match_check
         do_nlu_check = self.do_nlu_check
@@ -133,8 +132,8 @@ class HaierAutoTest:
         sn_lst = text.split("\n")
         out = []
         for i, sn in enumerate(sn_lst):
-            sn = sn.strip()
-            query = get_query_by_sn(sn=sn, env=env)
+            self.log_parser.update_config(sn=sn.strip())
+            query = self.log_parser.get_query_by_sn()
             case = format_string(f"case {i + 1:03d}: {query}", length=80)
             out.append(case)
 
@@ -142,27 +141,27 @@ class HaierAutoTest:
                 block_domain_check = ["Dev.Oven", "Steamer", "SteamBaker", "Lamp", "IntegratedStove", "Dev.cookHood"]
 
             if block_info_check:
-                block_info = block_check(sn, domain_lst=block_domain_check, env=env, verbose=False)
+                block_info = self.log_parser.block_check(domain_lst=block_domain_check, verbose=False)
                 out.append(format_string("block_info", length=80))
                 out.append(json.dumps(block_info, indent=4, ensure_ascii=False))
 
             if tpl_match_check:
-                tpl_match_info = get_tpl_match_info_from_log(sn, env, verbose=False)
+                tpl_match_info = self.log_parser.get_tpl_match_info_from_log(verbose=False)
                 out.append(format_string("tpl_match_info", length=80))
                 out.append(json.dumps(tpl_match_info, indent=4, ensure_ascii=False))
 
             if do_nlu_check:
-                do_nlu_info = get_do_nlu_info_from_log(sn, env, verbose=False)
+                do_nlu_info = self.log_parser.get_do_nlu_info_from_log(verbose=False)
                 out.append(format_string("do_nlu_info", length=80))
                 out.append(json.dumps(do_nlu_info, indent=4, ensure_ascii=False))
 
             if log_trace_check:
-                log_trace_info = get_log_trace_info_from_log(sn, env, verbose=False)
+                log_trace_info = self.log_parser.get_log_trace_info_from_log(verbose=False)
                 out.append(format_string("log_trace_info", length=80))
                 out.append(log_trace_info)
 
             if do_nlp_analysis_check:
-                nlp_analysis_info = get_do_nlp_analysis_info_from_log(sn, env, verbose=False)
+                nlp_analysis_info = self.log_parser.get_do_nlp_analysis_info_from_log(verbose=False)
                 out.append(format_string("do_nlp_analysis", length=80))
                 out.append(json.dumps(nlp_analysis_info, indent=4, ensure_ascii=False))
 

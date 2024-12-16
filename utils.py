@@ -2,7 +2,7 @@
 # created @2024/12/10
 # created by zhanzq
 #
-
+import os
 import socket
 
 
@@ -28,3 +28,10 @@ def check_port_in_use(port, host="127.0.0.1"):
     finally:
         if s:
             s.close()
+
+
+def release_port(port):
+    command = f"""lsof -i :{port} | grep :{port} | """ + "awk '{ print $2 }'"
+    os.system(command)
+
+    return
