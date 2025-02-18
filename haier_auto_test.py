@@ -73,12 +73,12 @@ class HaierAutoTest:
             return ""
 
     def dm(self, text, simulation=True):
-        query_lst = text.split("\n")
+        query_lst = text.split()
         out = []
         for i, query in enumerate(query_lst):
             query = query.strip()
             print(f"query: {query}")
-            case = format_string(f"case {i + 1:03d}", length=80)
+            case = format_string(f"case {i + 1: 03d}", length=80)
             out.append(case)
             json_resp = self.parser.get_dm_service_response(query=query, env=self.env, device=self.device, simulation=simulation)
             dm_info = self.parser.parse_dm_response(json_resp=json_resp)
@@ -88,12 +88,12 @@ class HaierAutoTest:
         return "\n".join(out)
 
     def nlu(self, text):
-        query_lst = text.split("\n")
+        query_lst = text.split()
         out = []
         for i, query in enumerate(query_lst):
             query = query.strip()
             print(f"query: {query}")
-            case = format_string(f"case {i + 1:03d}", length=80)
+            case = format_string(f"case {i + 1: 03d}", length=80)
             out.append(case)
             json_resp = self.parser.get_nlu_service_response(query=query, env=self.env, device=self.device)
             nlu_info = self.parser.parse_nlu_response(json_resp=json_resp)
@@ -104,11 +104,12 @@ class HaierAutoTest:
         return "\n".join(out)
 
     def template(self, text):
-        query_lst = text.split("\n")
+        query_lst = text.split()
         out = []
         for i, query in enumerate(query_lst):
             query = query.strip()
-            case = format_string(f"case {i + 1:03d}: {query}", length=80)
+            print(f"query: {query}")
+            case = format_string(f"case {i + 1: 03d}: {query}", length=80)
             out.append(case)
             json_resp = self.parser.get_tpl_service_response(query=query)
             tpl_info = self.parser.parse_tpl_response(json_resp=json_resp)
@@ -129,12 +130,12 @@ class HaierAutoTest:
         do_nlu_check = self.do_nlu_check
         log_trace_check = self.log_trace_check
         do_nlp_analysis_check = self.do_nlp_analysis_check
-        sn_lst = text.split("\n")
+        sn_lst = text.split()
         out = []
         for i, sn in enumerate(sn_lst):
             self.log_parser.update_config(sn=sn.strip())
             query = self.log_parser.get_query_by_sn()
-            case = format_string(f"case {i + 1:03d}: {query}", length=80)
+            case = format_string(f"case {i + 1: 03d}: {query}", length=80)
             out.append(case)
 
             if not block_domain_check:
